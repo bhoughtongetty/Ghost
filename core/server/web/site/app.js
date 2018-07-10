@@ -94,6 +94,17 @@ module.exports = function setupSiteApp() {
     // Serve robots.txt if not found in theme
     siteApp.use(servePublicFile('robots.txt', 'text/plain', constants.ONE_HOUR_S));
 
+    // serve a health check route
+    siteApp.get('/healthcheck', (req, res) => {
+        const message = 'WORKING';
+        res.set('Content-Type', 'text/plain');
+        res.set('Content-Length', message.length);
+        res.set('Cache-Control', 'no-cache,no-store,must-revalidate');
+        res.set('Expires', 0);
+
+        res.send(message);
+    });
+
     // setup middleware for internal apps
     // @TODO: refactor this to be a proper app middleware hook for internal & external apps
     config.get('apps:internal').forEach(function (appName) {
